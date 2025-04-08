@@ -81,8 +81,13 @@ export default function Recents() {
   const renderFileItem = ({ item }: any) => {
     return (
       <View style={isGridView ? styles.gridItem : styles.listItem}>
-        <View style={styles.previewContainer}>{getFileIcon(item)}</View>
-        <View style={styles.details}>
+        {isGridView ? (
+          <View style={styles.previewContainer}>{getFileIcon(item)}</View>
+        ) : (
+          <View style={styles.listPreview}>{getFileIcon(item)}</View>
+        )}
+  
+        <View style={isGridView ? styles.details : styles.listDetails}>
           <Text
             style={[styles.fileName, !isGridView && styles.truncatedFileName]}
             numberOfLines={1}
@@ -90,17 +95,18 @@ export default function Recents() {
           >
             {item.name}
           </Text>
-
           <Text style={styles.meta}>
             {item.date} • {item.size}
           </Text>
         </View>
+  
         <TouchableOpacity style={styles.menu}>
           <Ionicons name="ellipsis-vertical" size={18} color="#aaa" />
         </TouchableOpacity>
       </View>
     );
   };
+  
 
   return (
     <View style={styles.container}>
@@ -172,8 +178,8 @@ const styles = StyleSheet.create({
   },
   subHeading: {
     color: "#9ca3af",
-    fontSize: 16,
-    marginBottom: 12,
+    fontSize: 14,
+    //marginBottom: 12,
   },
   gridItem: {
     // backgroundColor: "#1f2937",
@@ -189,7 +195,9 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 12,
     marginBottom: 12,
+   // backgroundColor: "#1f2937", // optional: helps define rows
   },
+  
 
   previewContainer: {
     marginBottom: 10,
@@ -215,11 +223,11 @@ const styles = StyleSheet.create({
   meta: {
     color: "#9ca3af",
     fontSize: 10,
-    textAlign: "center",
+    //textAlign: "center",
   },
   menu: {
     position: "absolute",
-    top: 8,
+    //top: 8,
     right: 8,
   },
   toggleGroup: {
@@ -245,4 +253,17 @@ const styles = StyleSheet.create({
     maxWidth: 200, // adjust as needed based on screen size and layout
     textAlign: "left",
   },
+  listPreview: {
+    marginRight: 12,
+    width: 50,
+    height: 50,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  
+  listDetails: {
+   // flex: 1,
+    //justifyContent: "center",
+  },
+  
 });
