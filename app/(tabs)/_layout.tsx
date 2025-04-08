@@ -2,16 +2,16 @@ import { Tabs } from "expo-router";
 import {
   TouchableOpacity,
   Alert,
-  useColorScheme,
   View,
   Text,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import * as DocumentPicker from "expo-document-picker";
+import { useTheme } from "../../src/context/ThemeContext"; // path as per your project
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
   const handleFileUpload = async () => {
     try {
@@ -72,7 +72,7 @@ export default function TabLayout() {
                 top: -30,
                 left: "50%",
                 transform: [{ translateX: -35 }],
-                backgroundColor: "#fff",
+                backgroundColor: isDark ? "#fff" : "#2c2c2e",
                 width: 70,
                 height: 70,
                 borderRadius: 35,
@@ -85,7 +85,11 @@ export default function TabLayout() {
                 elevation: 5,
               }}
             >
-              <Ionicons name="cloud-upload-outline" size={30} color="#000" />
+              <Ionicons
+                name="cloud-upload-outline"
+                size={30}
+                color={isDark ? "#000" : "#fff"}
+              />
             </TouchableOpacity>
           ),
         }}
@@ -99,6 +103,7 @@ export default function TabLayout() {
             <Ionicons
               name={focused ? "person" : "person-outline"}
               size={24}
+            
               color={focused ? "#ffd33d" : isDark ? "#fff" : "#111"}
             />
           ),

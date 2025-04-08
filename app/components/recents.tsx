@@ -9,6 +9,7 @@ import {
   Dimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "../../src/context/ThemeContext"; // update path accordingly
 
 const screenWidth = Dimensions.get("window").width;
 const numColumns = 3;
@@ -59,6 +60,9 @@ const recentFiles = [
 
 export default function Recents() {
   const [isGridView, setIsGridView] = useState(true);
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+  const styles = getStyles(isDark);
 
   const getFileIcon = (item: any) => {
     if (item.type === "image") {
@@ -70,11 +74,11 @@ export default function Recents() {
         />
       );
     } else if (item.type === "pdf") {
-      return <Ionicons name="document" size={40} color="#ff6b6b" />;
+      return <Ionicons name="document" size={40} color="#ef4444" />;
     } else if (item.type === "text") {
-      return <Ionicons name="document-text" size={40} color="#60a5fa" />;
+      return <Ionicons name="document-text" size={40} color="#3b82f6" />;
     } else {
-      return <Ionicons name="document-outline" size={40} color="#ccc" />;
+      return <Ionicons name="document-outline" size={40} color="#aaa" />;
     }
   };
 
@@ -86,10 +90,13 @@ export default function Recents() {
         ) : (
           <View style={styles.listPreview}>{getFileIcon(item)}</View>
         )}
-  
+
         <View style={isGridView ? styles.details : styles.listDetails}>
           <Text
-            style={[styles.fileName, !isGridView && styles.truncatedFileName]}
+            style={[
+              styles.fileName,
+              !isGridView && styles.truncatedFileName,
+            ]}
             numberOfLines={1}
             ellipsizeMode="tail"
           >
@@ -99,14 +106,13 @@ export default function Recents() {
             {item.date} • {item.size}
           </Text>
         </View>
-  
+
         <TouchableOpacity style={styles.menu}>
-          <Ionicons name="ellipsis-vertical" size={18} color="#aaa" />
+          <Ionicons name="ellipsis-vertical" size={18} color={isDark ? "#999" : "#666"} />
         </TouchableOpacity>
       </View>
     );
   };
-  
 
   return (
     <View style={styles.container}>
@@ -125,9 +131,6 @@ export default function Recents() {
               size={20}
               color={!isGridView ? "#111827" : "#fff"}
             />
-            {!isGridView && (
-              <Ionicons name="checkmark" size={14} color="#111827" />
-            )}
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -158,112 +161,98 @@ export default function Recents() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    //backgroundColor: "#111827",
-    paddingHorizontal: 20,
-    paddingTop: 20,
-  },
-  toggleWrapper: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 10,
-    alignItems: "center",
-  },
-  toggleButton: {
-    backgroundColor: "#374151",
-    padding: 10,
-    borderRadius: 10,
-  },
-  subHeading: {
-    color: "#9ca3af",
-    fontSize: 14,
-    //marginBottom: 12,
-  },
-  gridItem: {
-    // backgroundColor: "#1f2937",
-    width: cardSize,
-    margin: 8,
-    borderRadius: 12,
-    alignItems: "center",
-    padding: 12,
-  },
-  listItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 12,
-   // backgroundColor: "#1f2937", // optional: helps define rows
-  },
-  
-
-  previewContainer: {
-    marginBottom: 10,
-    alignItems: "center",
-  },
-  imagePreview: {
-    width: 50,
-    height: 50,
-    borderRadius: 8,
-    backgroundColor: "#374151",
-  },
-  details: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  fileName: {
-    color: "#fff",
-    fontSize: 12,
-    fontWeight: "500",
-    textAlign: "center",
-    marginBottom: 4,
-  },
-  meta: {
-    color: "#9ca3af",
-    fontSize: 10,
-    //textAlign: "center",
-  },
-  menu: {
-    position: "absolute",
-    //top: 8,
-    right: 8,
-  },
-  toggleGroup: {
-    flexDirection: "row",
-    backgroundColor: "#374151",
-    borderRadius: 50,
-    padding: 4,
-    gap: 4,
-  },
-
-  toggleOption: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    borderRadius: 50,
-  },
-
-  activeToggleOption: {
-    backgroundColor: "#fff",
-  },
-  truncatedFileName: {
-    maxWidth: 200, // adjust as needed based on screen size and layout
-    textAlign: "left",
-  },
-  listPreview: {
-    marginRight: 12,
-    width: 50,
-    height: 50,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  
-  listDetails: {
-   // flex: 1,
-    //justifyContent: "center",
-  },
-  
-});
+const getStyles = (isDark: boolean) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      //backgroundColor: isDark ? "#111827" : "#f9fafb",
+      paddingHorizontal: 20,
+      paddingTop: 20,
+    },
+    toggleWrapper: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      marginBottom: 10,
+      alignItems: "center",
+    },
+    subHeading: {
+      color: isDark ? "#d1d5db" : "#4b5563",
+      fontSize: 14,
+    },
+    toggleGroup: {
+      flexDirection: "row",
+      backgroundColor: isDark ? "#374151" : "#d1d5db",
+      borderRadius: 50,
+      padding: 4,
+      gap: 4,
+    },
+    toggleOption: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingVertical: 6,
+      paddingHorizontal: 10,
+      borderRadius: 50,
+    },
+    activeToggleOption: {
+      backgroundColor: "#fff",
+    },
+    gridItem: {
+      //backgroundColor: isDark ? "#1f2937" : "#fff",
+      width: cardSize,
+      margin: 8,
+      borderRadius: 12,
+      alignItems: "center",
+      padding: 12,
+      elevation: 2,
+    },
+    listItem: {
+      flexDirection: "row",
+      alignItems: "center",
+      padding: 16,
+      borderRadius: 12,
+      marginBottom: 12,
+      //backgroundColor: isDark ? "#1f2937" : "#fff",
+      elevation: 2,
+    },
+    previewContainer: {
+      marginBottom: 10,
+      alignItems: "center",
+    },
+    imagePreview: {
+      width: 50,
+      height: 50,
+      borderRadius: 8,
+      backgroundColor: "#374151",
+    },
+    details: {
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    fileName: {
+      color: isDark ? "#fff" : "#111827",
+      fontSize: 12,
+      fontWeight: "500",
+      textAlign: "center",
+      marginBottom: 4,
+    },
+    meta: {
+      color: isDark ? "#9ca3af" : "#6b7280",
+      fontSize: 10,
+    },
+    menu: {
+      position: "absolute",
+      right: 8,
+    },
+    truncatedFileName: {
+      maxWidth: 200,
+      textAlign: "left",
+    },
+    listPreview: {
+      marginRight: 12,
+      width: 50,
+      height: 50,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    listDetails: {},
+  });

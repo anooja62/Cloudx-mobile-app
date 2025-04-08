@@ -6,20 +6,20 @@ import {
   Image,
   TouchableOpacity,
   Alert,
-  useColorScheme,
+  StatusBar,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useTheme } from '../../src/context/ThemeContext'; // custom theme hook
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const theme = useColorScheme(); // 'light' or 'dark'
-
-  const isDarkMode = theme === 'dark';
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   const handleLogout = () => {
     Alert.alert('Logout', 'You have been logged out.');
-    // Add logout logic (clear token, navigate, etc.) here
+    // Add logout logic here
   };
 
   const goBack = () => {
@@ -30,24 +30,21 @@ export default function ProfileScreen() {
     <View
       style={[
         styles.container,
-        { backgroundColor: isDarkMode ? '#000' : '#fff' },
+        { backgroundColor: isDark ? '#000' : '#fff' },
       ]}
     >
+      <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
+
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={goBack}>
           <Ionicons
             name="arrow-back"
             size={24}
-            color={isDarkMode ? '#fff' : '#000'}
+            color={isDark ? '#fff' : '#000'}
           />
         </TouchableOpacity>
-        <Text
-          style={[
-            styles.headerTitle,
-            { color: isDarkMode ? '#fff' : '#000' },
-          ]}
-        >
+        <Text style={[styles.headerTitle, { color: isDark ? '#fff' : '#000' }]}>
           Profile
         </Text>
       </View>
@@ -58,18 +55,14 @@ export default function ProfileScreen() {
           source={{ uri: 'https://via.placeholder.com/100' }}
           style={[
             styles.avatar,
-            { borderColor: isDarkMode ? '#fff' : '#000' },
+            { borderColor: isDark ? '#fff' : '#000' },
           ]}
         />
 
-        <Text
-          style={[styles.name, { color: isDarkMode ? '#fff' : '#111827' }]}
-        >
+        <Text style={[styles.name, { color: isDark ? '#fff' : '#111827' }]}>
           John Doe
         </Text>
-        <Text
-          style={[styles.email, { color: isDarkMode ? '#9ca3af' : '#4b5563' }]}
-        >
+        <Text style={[styles.email, { color: isDark ? '#9ca3af' : '#4b5563' }]}>
           johndoe@example.com
         </Text>
 
@@ -77,7 +70,7 @@ export default function ProfileScreen() {
           style={[
             styles.logoutButton,
             {
-              backgroundColor: isDarkMode ? '#fff' : '#111827',
+              backgroundColor: isDark ? '#fff' : '#111827',
             },
           ]}
           onPress={handleLogout}
@@ -85,12 +78,12 @@ export default function ProfileScreen() {
           <Ionicons
             name="log-out-outline"
             size={16}
-            color={isDarkMode ? '#111827' : '#fff'}
+            color={isDark ? '#111827' : '#fff'}
           />
           <Text
             style={[
               styles.logoutText,
-              { color: isDarkMode ? '#111827' : '#fff' },
+              { color: isDark ? '#111827' : '#fff' },
             ]}
           >
             Logout
