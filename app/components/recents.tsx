@@ -57,7 +57,7 @@ const recentFiles = [
   },
 ];
 
-export default function HomeScreen() {
+export default function Recents() {
   const [isGridView, setIsGridView] = useState(true);
 
   const getFileIcon = (item: any) => {
@@ -83,9 +83,14 @@ export default function HomeScreen() {
       <View style={isGridView ? styles.gridItem : styles.listItem}>
         <View style={styles.previewContainer}>{getFileIcon(item)}</View>
         <View style={styles.details}>
-          <Text style={styles.fileName} numberOfLines={2}>
+          <Text
+            style={[styles.fileName, !isGridView && styles.truncatedFileName]}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
             {item.name}
           </Text>
+
           <Text style={styles.meta}>
             {item.date} • {item.size}
           </Text>
@@ -99,44 +104,41 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-   <View style={styles.toggleWrapper}>
-   <Text style={styles.subHeading}>Recent Files</Text>
-   <View style={styles.toggleGroup}>
-  <TouchableOpacity
-    onPress={() => setIsGridView(false)}
-    style={[
-      styles.toggleOption,
-      !isGridView && styles.activeToggleOption,
-    ]}
-  >
-    <Ionicons
-      name="list-outline"
-      size={20}
-      color={!isGridView ? "#111827" : "#fff"}
-    />
-    {!isGridView && <Ionicons name="checkmark" size={14} color="#111827" />}
-  </TouchableOpacity>
+      <View style={styles.toggleWrapper}>
+        <Text style={styles.subHeading}>Recent Files</Text>
+        <View style={styles.toggleGroup}>
+          <TouchableOpacity
+            onPress={() => setIsGridView(false)}
+            style={[
+              styles.toggleOption,
+              !isGridView && styles.activeToggleOption,
+            ]}
+          >
+            <Ionicons
+              name="list-outline"
+              size={20}
+              color={!isGridView ? "#111827" : "#fff"}
+            />
+            {!isGridView && (
+              <Ionicons name="checkmark" size={14} color="#111827" />
+            )}
+          </TouchableOpacity>
 
-  <TouchableOpacity
-    onPress={() => setIsGridView(true)}
-    style={[
-      styles.toggleOption,
-      isGridView && styles.activeToggleOption,
-    ]}
-  >
-    <Ionicons
-      name="grid-outline"
-      size={20}
-      color={isGridView ? "#111827" : "#fff"}
-    />
-  </TouchableOpacity>
-</View>
-
-
-</View>
-
-
-      
+          <TouchableOpacity
+            onPress={() => setIsGridView(true)}
+            style={[
+              styles.toggleOption,
+              isGridView && styles.activeToggleOption,
+            ]}
+          >
+            <Ionicons
+              name="grid-outline"
+              size={20}
+              color={isGridView ? "#111827" : "#fff"}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
 
       <FlatList
         data={recentFiles}
@@ -161,7 +163,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 10,
-    alignItems:'center'
+    alignItems: "center",
   },
   toggleButton: {
     backgroundColor: "#374151",
@@ -174,7 +176,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   gridItem: {
-   // backgroundColor: "#1f2937",
+    // backgroundColor: "#1f2937",
     width: cardSize,
     margin: 8,
     borderRadius: 12,
@@ -182,13 +184,13 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   listItem: {
-   // backgroundColor: "#1f2937",
     flexDirection: "row",
     alignItems: "center",
     padding: 16,
     borderRadius: 12,
     marginBottom: 12,
   },
+
   previewContainer: {
     marginBottom: 10,
     alignItems: "center",
@@ -227,7 +229,7 @@ const styles = StyleSheet.create({
     padding: 4,
     gap: 4,
   },
-  
+
   toggleOption: {
     flexDirection: "row",
     alignItems: "center",
@@ -235,9 +237,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 50,
   },
-  
+
   activeToggleOption: {
     backgroundColor: "#fff",
   },
-  
+  truncatedFileName: {
+    maxWidth: 200, // adjust as needed based on screen size and layout
+    textAlign: "left",
+  },
 });
