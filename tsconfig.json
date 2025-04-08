@@ -3,8 +3,13 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@context/*": ["src/context/*"]
+      "@context/*": [
+        "src/context/*"
+      ]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+  ]
 }
