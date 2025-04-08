@@ -1,6 +1,18 @@
-import React from "react";
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Dimensions,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+
+const screenWidth = Dimensions.get("window").width;
+const numColumns = 3;
+const cardSize = (screenWidth - 40 - 16 * 2) / numColumns;
 
 const recentFiles = [
   {
@@ -14,18 +26,21 @@ const recentFiles = [
     date: "04/03/2025",
     size: "57.59 KB",
     type: "image",
+    uri: "https://via.placeholder.com/100",
   },
   {
     name: "Screenshot 2025-03-01 at 12.45.35 PM.png",
     date: "03/03/2025",
     size: "849.12 KB",
     type: "image",
+    uri: "https://via.placeholder.com/100",
   },
   {
     name: "Screenshot 2025-03-03 at 1.23.38 PM.png",
     date: "03/03/2025",
     size: "70.24 KB",
     type: "image",
+    uri: "https://via.placeholder.com/100",
   },
   {
     name: "Terminal Saved Output.txt",
@@ -33,48 +48,103 @@ const recentFiles = [
     size: "3.72 KB",
     type: "text",
   },
+  {
+    name: "files.png",
+    date: "03/03/2025",
+    size: "1.81 KB",
+    type: "image",
+    uri: "https://via.placeholder.com/100",
+  },
 ];
 
-const getFileIcon = (type: string) => {
-  switch (type) {
-    case "pdf":
-      return <Ionicons name="document" size={24} color="#ff6b6b" />;
-    case "image":
-      return <Ionicons name="image" size={24} color="#ffd93d" />;
-    case "text":
-      return <Ionicons name="document-text" size={24} color="#ccc" />;
-    default:
-      return <Ionicons name="document-outline" size={24} color="#ccc" />;
-  }
-};
-
 export default function HomeScreen() {
+  const [isGridView, setIsGridView] = useState(true);
+
+  const getFileIcon = (item: any) => {
+    if (item.type === "image") {
+      return (
+        <Image
+          source={{ uri: item.uri }}
+          style={styles.imagePreview}
+          resizeMode="cover"
+        />
+      );
+    } else if (item.type === "pdf") {
+      return <Ionicons name="document" size={40} color="#ff6b6b" />;
+    } else if (item.type === "text") {
+      return <Ionicons name="document-text" size={40} color="#60a5fa" />;
+    } else {
+      return <Ionicons name="document-outline" size={40} color="#ccc" />;
+    }
+  };
+
+  const renderFileItem = ({ item }: any) => {
+    return (
+      <View style={isGridView ? styles.gridItem : styles.listItem}>
+        <View style={styles.previewContainer}>{getFileIcon(item)}</View>
+        <View style={styles.details}>
+          <Text style={styles.fileName} numberOfLines={2}>
+            {item.name}
+          </Text>
+          <Text style={styles.meta}>
+            {item.date} • {item.size}
+          </Text>
+        </View>
+        <TouchableOpacity style={styles.menu}>
+          <Ionicons name="ellipsis-vertical" size={18} color="#aaa" />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   return (
-    <View style={styles.container} >
- 
-      <Text style={styles.subHeading}>Recent Files</Text>
+    <View style={styles.container}>
+   <View style={styles.toggleWrapper}>
+   <Text style={styles.subHeading}>Recent Files</Text>
+   <View style={styles.toggleGroup}>
+  <TouchableOpacity
+    onPress={() => setIsGridView(false)}
+    style={[
+      styles.toggleOption,
+      !isGridView && styles.activeToggleOption,
+    ]}
+  >
+    <Ionicons
+      name="list-outline"
+      size={20}
+      color={!isGridView ? "#111827" : "#fff"}
+    />
+    {!isGridView && <Ionicons name="checkmark" size={14} color="#111827" />}
+  </TouchableOpacity>
+
+  <TouchableOpacity
+    onPress={() => setIsGridView(true)}
+    style={[
+      styles.toggleOption,
+      isGridView && styles.activeToggleOption,
+    ]}
+  >
+    <Ionicons
+      name="grid-outline"
+      size={20}
+      color={isGridView ? "#111827" : "#fff"}
+    />
+  </TouchableOpacity>
+</View>
+
+
+</View>
+
+
+      
 
       <FlatList
-   
         data={recentFiles}
+        key={isGridView ? "grid" : "list"}
         keyExtractor={(item) => item.name}
-        renderItem={({ item }) => (
-          <View style={styles.fileCard}>
-            <View style={styles.fileInfo}>
-              {getFileIcon(item.type)}
-              <View style={styles.textBlock}>
-                <Text style={styles.fileName}>{item.name}</Text>
-                <Text style={styles.meta}>
-                  {item.date} • {item.size}
-                </Text>
-              </View>
-            </View>
-            <TouchableOpacity>
-              <Ionicons name="ellipsis-vertical" size={20} color="#aaa" />
-            </TouchableOpacity>
-          </View>
-        )}
-        contentContainerStyle={{ paddingBottom: 100 }}
+        numColumns={isGridView ? numColumns : 1}
+        renderItem={renderFileItem}
+        contentContainerStyle={{ paddingBottom: 120 }}
       />
     </View>
   );
@@ -83,45 +153,91 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-   // backgroundColor: "#111827",
-    paddingTop: 20,
+    //backgroundColor: "#111827",
     paddingHorizontal: 20,
+    paddingTop: 20,
   },
-  heading: {
-    color: "#fff",
-    fontSize: 28,
-    fontWeight: "bold",
-    marginBottom: 8,
+  toggleWrapper: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 10,
+    alignItems:'center'
+  },
+  toggleButton: {
+    backgroundColor: "#374151",
+    padding: 10,
+    borderRadius: 10,
   },
   subHeading: {
     color: "#9ca3af",
     fontSize: 16,
-    marginBottom: 20,
-  },
-  fileCard: {
-    backgroundColor: "#1f2937",
-    borderRadius: 12,
-    padding: 16,
     marginBottom: 12,
+  },
+  gridItem: {
+   // backgroundColor: "#1f2937",
+    width: cardSize,
+    margin: 8,
+    borderRadius: 12,
+    alignItems: "center",
+    padding: 12,
+  },
+  listItem: {
+   // backgroundColor: "#1f2937",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 12,
   },
-  fileInfo: {
-    flexDirection: "row",
+  previewContainer: {
+    marginBottom: 10,
     alignItems: "center",
-    gap: 12,
   },
-  textBlock: {
-    maxWidth: "80%",
+  imagePreview: {
+    width: 50,
+    height: 50,
+    borderRadius: 8,
+    backgroundColor: "#374151",
+  },
+  details: {
+    alignItems: "center",
+    justifyContent: "center",
   },
   fileName: {
     color: "#fff",
-    fontSize: 14,
+    fontSize: 12,
+    fontWeight: "500",
+    textAlign: "center",
     marginBottom: 4,
   },
   meta: {
     color: "#9ca3af",
-    fontSize: 12,
+    fontSize: 10,
+    textAlign: "center",
   },
+  menu: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+  },
+  toggleGroup: {
+    flexDirection: "row",
+    backgroundColor: "#374151",
+    borderRadius: 50,
+    padding: 4,
+    gap: 4,
+  },
+  
+  toggleOption: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 50,
+  },
+  
+  activeToggleOption: {
+    backgroundColor: "#fff",
+  },
+  
 });
