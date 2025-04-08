@@ -9,7 +9,6 @@ export default function TabLayout() {
       const result = await DocumentPicker.getDocumentAsync({ copyToCacheDirectory: true });
       if (result?.assets && result.assets.length > 0) {
         Alert.alert('File Selected', result.assets[0].name);
-        // You can upload the file here
       }
     } catch (error) {
       console.error('File pick error:', error);
@@ -26,10 +25,12 @@ export default function TabLayout() {
           backgroundColor: '#1c1c1e',
           borderTopLeftRadius: 40,
           borderTopRightRadius: 40,
-          height: 100,
+          height: 90,
+          borderTopWidth: 0,
         },
       }}
     >
+      {/* Left: Home */}
       <Tabs.Screen
         name="index"
         options={{
@@ -43,35 +44,39 @@ export default function TabLayout() {
         }}
       />
 
-      {/* Upload as FAB – no navigation */}
+      {/* Center: Upload (NO Navigation) */}
       <Tabs.Screen
         name="upload"
         options={{
-        
+         
           tabBarButton: (props) => (
             <TouchableOpacity
-              {...props}
               onPress={handleFileUpload}
               style={{
+                position: 'absolute',
                 top: -30,
+                left: '50%',
+                transform: [{ translateX: -35 }],
+                backgroundColor: '#fff',
+                width: 70,
+                height: 70,
+                borderRadius: 35,
                 justifyContent: 'center',
                 alignItems: 'center',
-                backgroundColor: '#fff',
-                width: 60,
-                height: 60,
-                borderRadius: 30,
                 shadowColor: '#000',
                 shadowOpacity: 0.3,
                 shadowOffset: { width: 0, height: 3 },
-                shadowRadius: 4,
+                shadowRadius: 5,
+                elevation: 5,
               }}
             >
-              <Ionicons name="cloud-upload-outline" size={28} color="#000" />
+              <Ionicons name="cloud-upload-outline" size={30} color="#000" />
             </TouchableOpacity>
           ),
         }}
       />
 
+      {/* Right: Profile */}
       <Tabs.Screen
         name="profile"
         options={{
